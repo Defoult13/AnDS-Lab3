@@ -52,3 +52,29 @@ void insertionSort(std::vector<int>& array, stats& statistics) {
     }
 }
 
+void shellSort(std::vector<int>& array, stats& statistics) {
+    for (size_t gap = array.size() / 2; gap > 0; gap /= 2) {
+        for (size_t i = gap; i < array.size(); ++i) {
+            int temp = array[i];
+            size_t j = i;
+            size_t comparisons = 0;
+
+            while (j >= gap && array[j - gap] > temp) {
+                comparisons += 2; // Учитываем сравнение и условие внутри while
+                array[j] = array[j - gap];
+                j -= gap;
+            }
+
+            if (j >= gap) {
+                comparisons += 1; // Учитываем сравнение с последним элементом в интервале
+            }
+
+            statistics.comparison_count += comparisons;
+            array[j] = temp;
+            ++statistics.copy_count;
+        }
+    }
+}
+
+
+
