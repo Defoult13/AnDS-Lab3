@@ -116,3 +116,65 @@ void heapSort(std::vector<int>& array, stats& statistics) {
         heapify(array, i, 0, statistics);
     }
 }
+
+int main() {
+    srand(static_cast<unsigned int>(time(0)));
+
+    size_t array_lengths[] = { 1000, 2000, 3000, 10000, 25000, 50000 };
+    size_t num_trials = 100;
+
+    for (size_t i = 0; i < sizeof(array_lengths) / sizeof(array_lengths[0]); ++i) {
+        size_t length = array_lengths[i];
+
+        std::cout << "Array Length: " << length << std::endl;
+
+        // Random Array
+        std::vector<int> random_array(length);
+
+        stats insertion_stats_random, shell_stats_random, heap_stats_random;
+        for (size_t trial = 0; trial < num_trials; ++trial) {
+            generateRandomArray(random_array);
+            insertionSort(random_array, insertion_stats_random);
+            shellSort(random_array, shell_stats_random);
+            heapSort(random_array, heap_stats_random);
+        }
+
+        printStats("Random Array - Insertion Sort", insertion_stats_random, num_trials);
+        printStats("Random Array - Shell Sort", shell_stats_random, num_trials);
+        printStats("Random Array - Heap Sort", heap_stats_random, num_trials);
+
+        // Sorted Array
+        std::vector<int> sorted_array(length);
+
+        stats insertion_stats_sorted, shell_stats_sorted, heap_stats_sorted;
+        for (size_t trial = 0; trial < num_trials; ++trial) {
+            generateSortedArray(sorted_array);
+            insertionSort(sorted_array, insertion_stats_sorted);
+            shellSort(sorted_array, shell_stats_sorted);
+            heapSort(sorted_array, heap_stats_sorted);
+        }
+
+        printStats("Sorted Array - Insertion Sort", insertion_stats_sorted, num_trials);
+        printStats("Sorted Array - Shell Sort", shell_stats_sorted, num_trials);
+        printStats("Sorted Array - Heap Sort", heap_stats_sorted, num_trials);
+
+        // Reverse Sorted Array
+        std::vector<int> reverse_sorted_array(length);
+
+        stats insertion_stats_reverse_sorted, shell_stats_reverse_sorted, heap_stats_reverse_sorted;
+        for (size_t trial = 0; trial < num_trials; ++trial) {
+            generateReverseSortedArray(reverse_sorted_array);
+            insertionSort(reverse_sorted_array, insertion_stats_reverse_sorted);
+            shellSort(reverse_sorted_array, shell_stats_reverse_sorted);
+            heapSort(reverse_sorted_array, heap_stats_reverse_sorted);
+        }
+
+        printStats("Reverse Sorted Array - Insertion Sort", insertion_stats_reverse_sorted, num_trials);
+        printStats("Reverse Sorted Array - Shell Sort", shell_stats_reverse_sorted, num_trials);
+        printStats("Reverse Sorted Array - Heap Sort", heap_stats_reverse_sorted, num_trials);
+
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
