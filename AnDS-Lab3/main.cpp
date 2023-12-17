@@ -60,13 +60,13 @@ void shellSort(std::vector<int>& array, stats& statistics) {
             size_t comparisons = 0;
 
             while (j >= gap && array[j - gap] > temp) {
-                comparisons += 2; // Учитываем сравнение и условие внутри while
+                comparisons += 2;
                 array[j] = array[j - gap];
                 j -= gap;
             }
 
             if (j >= gap) {
-                comparisons += 1; // Учитываем сравнение с последним элементом в интервале
+                comparisons += 1;
             }
 
             statistics.comparison_count += comparisons;
@@ -78,3 +78,41 @@ void shellSort(std::vector<int>& array, stats& statistics) {
 
 
 
+
+void heapify(std::vector<int>& array, size_t n, size_t i, stats& statistics) {
+    size_t largest = i;
+    size_t left = 2 * i + 1;
+    size_t right = 2 * i + 2;
+
+    if (left < n && array[left] > array[largest]) {
+        ++statistics.comparison_count;
+        largest = left;
+    }
+
+    if (right < n && array[right] > array[largest]) {
+        ++statistics.comparison_count;
+        largest = right;
+    }
+
+    if (largest != i) {
+        int temp = array[i];
+        array[i] = array[largest];
+        array[largest] = temp;
+        statistics.copy_count += 3;
+        heapify(array, n, largest, statistics);
+    }
+}
+
+void heapSort(std::vector<int>& array, stats& statistics) {
+    for (int i = array.size() / 2 - 1; i >= 0; --i) {
+        heapify(array, array.size(), i, statistics);
+    }
+
+    for (int i = array.size() - 1; i > 0; --i) {
+        int temp = array[0];
+        array[0] = array[i];
+        array[i] = temp;
+        statistics.copy_count += 3;
+        heapify(array, i, 0, statistics);
+    }
+}
