@@ -31,3 +31,24 @@ void printStats(const std::string& label, const stats& s, size_t num_trials) {
         << ", Copy Count = " << s.copy_count / num_trials << std::endl;
 }
 
+void insertionSort(std::vector<int>& array, stats& statistics) {
+    for (size_t i = 1; i < array.size(); ++i) {
+        int key = array[i];
+        size_t j = i;
+
+        while (j > 0 && array[j - 1] > key) {
+            ++statistics.comparison_count;
+            array[j] = array[j - 1];
+            ++statistics.copy_count;
+            --j;
+        }
+
+        if (j > 0) {
+            ++statistics.comparison_count;
+        }
+
+        array[j] = key;
+        ++statistics.copy_count;
+    }
+}
+
