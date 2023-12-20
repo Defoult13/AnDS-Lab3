@@ -38,7 +38,9 @@ void insertionSort(std::vector<int>& array, stats& statistics) {
 
         while (j > 0 && array[j - 1] > key) {
             ++statistics.comparison_count;
-            array[j] = array[j - 1];
+            int temp = array[j];
+            array[j] = array[j-1];
+            array[j-1] = temp;
             ++statistics.copy_count;
             --j;
         }
@@ -57,24 +59,26 @@ void shellSort(std::vector<int>& array, stats& statistics) {
         for (size_t i = gap; i < array.size(); ++i) {
             int temp = array[i];
             size_t j = i;
-            size_t comparisons = 0;
 
             while (j >= gap && array[j - gap] > temp) {
-                comparisons += 2;
+                ++statistics.comparison_count;
                 array[j] = array[j - gap];
                 j -= gap;
             }
 
             if (j >= gap) {
-                comparisons += 1;
+                ++statistics.comparison_count;
             }
 
-            statistics.comparison_count += comparisons;
-            array[j] = temp;
-            ++statistics.copy_count;
+            if (array[j] != temp) {
+                array[j] = temp;
+                ++statistics.copy_count;
+            }
         }
     }
 }
+
+
 
 
 
@@ -117,10 +121,17 @@ void heapSort(std::vector<int>& array, stats& statistics) {
     }
 }
 
+void printArray(const std::vector<int>& array) {
+    for (int num : array) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+}
+
 int main() {
     srand(static_cast<unsigned int>(time(0)));
 
-    size_t array_lengths[] = { 1000, 2000, 3000, 10000, 25000, 50000 };
+    size_t array_lengths[] = { 1000, 2000, 3000 };
     size_t num_trials = 100;
 
     for (size_t i = 0; i < sizeof(array_lengths) / sizeof(array_lengths[0]); ++i) {
@@ -175,6 +186,31 @@ int main() {
 
         std::cout << std::endl;
     }
+
+    std::vector<int> small_array = { 1, 4, 7, 5, 9, 7 };
+    std::vector<int> insertion_sorted = small_array;
+    std::vector<int> shell_sorted = small_array;
+    std::vector<int> heap_sorted = small_array;
+
+    stats insertion_stats, shell_stats, heap_stats;
+
+    // Test Insertion Sort
+    insertionSort(insertion_sorted, insertion_stats);
+    std::cout << "Insertion Sort: ";
+    printArray(insertion_sorted);
+    printStats("Insertion Sort", insertion_stats, 1);
+
+    // Test Shell Sort
+    shellSort(shell_sorted, shell_stats);
+    std::cout << "Shell Sort: ";
+    printArray(shell_sorted);
+    printStats("Shell Sort", shell_stats, 1);
+
+    // Test Heap Sort
+    heapSort(heap_sorted, heap_stats);
+    std::cout << "Heap Sort: ";
+    printArray(heap_sorted);
+    printStats("Heap Sort", heap_stats, 1);
 
     return 0;
 }
